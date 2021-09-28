@@ -1,0 +1,14 @@
+*.npy
+*.pt
+*.pyc
+logs/
+adult*
+*.pkl
+*.npz
+.vscode/
+lightning_logs/
+saved_experiments/
+catboost_info/
+*.csv
+datasets*/
+results*/
