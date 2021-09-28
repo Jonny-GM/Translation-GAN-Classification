@@ -1,0 +1,10 @@
+numpy
+torch
+pandas
+sklearn
+matplotlib
+pytorch_lightning
+umap
+torchmetrics
+catboost
+joblib
