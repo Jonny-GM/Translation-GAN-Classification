@@ -19,10 +19,22 @@ SEED = 123
 CLASSIFIER_TYPE = "catboost"
 OPTUNA_TRIALS = 50
 OPTUNA_SEARCH_SPACE = {
-    "epochs": {"low": 100, "high": 501, "step": 200},
+    "epochs": {
+        "low": 100,
+        "high": 501,
+        "step": 200,
+    },  # epochs for GAN training
     "translation_loss_weight": {"low": 0, "high": 0.19, "step": 0.05},
-    "gen_pts_kept": {"low": 0.5, "high": 16, "log": True},
-    "max_nn_prob": {"low": 0.6, "high": 1.05, "step": 0.2},
+    "gen_pts_kept": {
+        "low": 0.5,
+        "high": 16,
+        "log": True,
+    },  # how many generated points to keep as ratio of min class size
+    "max_prob": {
+        "low": 0.6,
+        "high": 1.05,
+        "step": 0.2,
+    },  # the max prob. of being in min that a generated pt can be
     "identity_loss_weight": {"low": 0, "high": 11, "step": 2.5},
     "cyclic_loss_weight": {"low": 0, "high": 16, "step": 5},
 }
@@ -105,7 +117,7 @@ def train_and_evaluate(
     classifier_points_filter = create_classifier(type=CLASSIFIER_TYPE)
     classifier_points_filter.fit(x_train.numpy(), y_train.numpy())
     probas = classifier_points_filter.predict_proba(x_gen.numpy())[:, 1]
-    x_gen = x_gen[(probas >= 0.05) & (probas <= hparams["max_nn_prob"])]
+    x_gen = x_gen[(probas >= 0.05) & (probas <= hparams["max_prob"])]
     if x_gen.shape[0] == 0:
         raise optuna.TrialPruned()
     x_gen = x_gen[
